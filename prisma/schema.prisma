@@ -18,5 +18,19 @@ model user {
   id  Int  @id @default(autoincrement())
   email String @unique
   password String
-  role  String
+  role  String   @default("client")
+}
+
+model product {
+  id  Int  @id @default(autoincrement())
+  name String 
+  price Float 
+  stock Int
+
+  category String?
+  image    String?
+
+  createdAt DateTime @default(now())
+
+
 }
