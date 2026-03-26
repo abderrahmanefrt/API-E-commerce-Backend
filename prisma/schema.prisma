@@ -1,11 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
@@ -14,17 +8,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  id  Int  @id @default(autoincrement())
-  email String @unique
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
   password String
-  role  String   @default("client")
+  role     String @default("client")
+
+  cart   Cart?
+  orders Order[]
 }
 
-model product {
-  id  Int  @id @default(autoincrement())
-  name String 
-  price Float 
+model Product {
+  id    Int    @id @default(autoincrement())
+  name  String
+  price Float
   stock Int
 
   category String?
@@ -32,15 +29,18 @@ model product {
 
   createdAt DateTime @default(now())
 
-
+  cartItems  CartItem[]
+  orderItems OrderItem[]
 }
 
 model Cart {
-      id Int  @id @default(autoincrement())
-      userid Int @unique
-      user   User @relation(fields: [userId], references: [id])
-        items  CartItem[]
+  id     Int @id @default(autoincrement())
+  userId Int @unique
+
+  user  User       @relation(fields: [userId], references: [id])
+  items CartItem[]
 }
+
 model CartItem {
   id        Int @id @default(autoincrement())
   cartId    Int
@@ -50,13 +50,14 @@ model CartItem {
   cart    Cart    @relation(fields: [cartId], references: [id])
   product Product @relation(fields: [productId], references: [id])
 }
+
 model Order {
   id         Int @id @default(autoincrement())
   userId     Int
   totalPrice Float
   status     String @default("pending")
 
-  user   User @relation(fields: [userId], references: [id])
+  user   User        @relation(fields: [userId], references: [id])
   items  OrderItem[]
 
   createdAt DateTime @default(now())
