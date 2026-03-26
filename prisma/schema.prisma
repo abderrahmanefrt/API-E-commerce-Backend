@@ -50,3 +50,25 @@ model CartItem {
   cart    Cart    @relation(fields: [cartId], references: [id])
   product Product @relation(fields: [productId], references: [id])
 }
+model Order {
+  id         Int @id @default(autoincrement())
+  userId     Int
+  totalPrice Float
+  status     String @default("pending")
+
+  user   User @relation(fields: [userId], references: [id])
+  items  OrderItem[]
+
+  createdAt DateTime @default(now())
+}
+
+model OrderItem {
+  id        Int @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+  price     Float
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+}
