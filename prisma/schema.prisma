@@ -34,3 +34,10 @@ model product {
 
 
 }
+
+model Cart {
+      id Int  @id @default(autoincrement())
+      userid Int @unique
+      user   User @relation(fields: [userId], references: [id])
+        items  CartItem[]
+}
